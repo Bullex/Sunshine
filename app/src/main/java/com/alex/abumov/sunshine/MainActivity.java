@@ -3,6 +3,7 @@ package com.alex.abumov.sunshine;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,6 +14,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("DEBUG", "Create");
     }
 
 
@@ -38,5 +40,41 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("DEBUG", "Start");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("DEBUG", "Resume");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("DEBUG", "Restart");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("DEBUG", "Pause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("DEBUG", "Stop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("DEBUG", "Destroy");
     }
 }
