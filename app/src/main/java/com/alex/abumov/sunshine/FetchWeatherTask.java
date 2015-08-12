@@ -15,9 +15,12 @@
  */
 package com.alex.abumov.sunshine;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -109,7 +112,31 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         // Students: First, check if the location with this city name exists in the db
         // If it exists, return the current ID
         // Otherwise, insert it using the content resolver and the base URI
-        return -1;
+        long id = -1;
+
+        String[] projection = new String[]{
+                WeatherContract.LocationEntry._ID
+        };
+        String where = WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?";
+        String[] whereArgs = new String[]{
+                locationSetting
+        };
+        Cursor cursor = mContext.getContentResolver().query(
+                WeatherContract.LocationEntry.CONTENT_URI,
+                projection, where, whereArgs, null);
+        if (cursor.moveToFirst()){
+            id = cursor.getLong(0);
+            cursor.close();
+            return id;
+        }
+        ContentValues values = new ContentValues();
+        values.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
+        values.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
+        values.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
+        values.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
+        Uri insertedUri = mContext.getContentResolver().insert(WeatherContract.LocationEntry.CONTENT_URI, values);
+        id = ContentUris.parseId(insertedUri);
+        return id;
     }
 
     /*
@@ -266,6 +293,9 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             // add to database
             if ( cVVector.size() > 0 ) {
                 // Student: call bulkInsert to add the weatherEntries to the database here
+                ContentValues[] cvArray = new ContentValues[cVVector.size()];
+                cVVector.toArray(cvArray);
+                mContext.getContentResolver().bulkInsert(WeatherContract.WeatherEntry.CONTENT_URI, cvArray);
             }
 
             // Sort order:  Ascending, by date.
@@ -275,17 +305,17 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
             // Students: Uncomment the next lines to display what what you stored in the bulkInsert
 
-//            Cursor cur = mContext.getContentResolver().query(weatherForLocationUri,
-//                    null, null, null, sortOrder);
-//
-//            cVVector = new Vector<ContentValues>(cur.getCount());
-//            if ( cur.moveToFirst() ) {
-//                do {
-//                    ContentValues cv = new ContentValues();
-//                    DatabaseUtils.cursorRowToContentValues(cur, cv);
-//                    cVVector.add(cv);
-//                } while (cur.moveToNext());
-//            }
+            Cursor cur = mContext.getContentResolver().query(weatherForLocationUri,
+                    null, null, null, sortOrder);
+
+            cVVector = new Vector<ContentValues>(cur.getCount());
+            if ( cur.moveToFirst() ) {
+                do {
+                    ContentValues cv = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(cur, cv);
+                    cVVector.add(cv);
+                } while (cur.moveToNext());
+            }
 
             Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
 
