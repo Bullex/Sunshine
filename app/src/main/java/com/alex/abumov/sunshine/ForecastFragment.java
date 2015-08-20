@@ -133,6 +133,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                                     locationSetting, cursor.getLong(COL_WEATHER_DATE)
                             ));
                     startActivity(intent);
+                    cursor.close();
                 }
             }
         });
