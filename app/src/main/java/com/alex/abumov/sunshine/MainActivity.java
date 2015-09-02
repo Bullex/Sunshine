@@ -1,6 +1,7 @@
 package com.alex.abumov.sunshine;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -8,9 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
 
     String mLocation;
+    private boolean mTwoPane;
     private final String FORECASTFRAGMENT_TAG = ForecastFragment.class.getSimpleName();
 
     @Override
@@ -57,7 +59,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String location = Utility.getPreferredLocation( this );
+        String location = Utility.getPreferredLocation(this);
         // update the location in our second pane using the fragment manager
         if (location != null && !location.equals(mLocation)) {
             ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
@@ -90,5 +92,12 @@ public class MainActivity extends ActionBarActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d("DEBUG", "Destroy");
+    }
+
+    @Override
+    public void onItemSelected(Uri contentUri) {
+        Intent intent = new Intent(this, DetailActivity.class)
+                .setData(contentUri);
+        startActivity(intent);
     }
 }
