@@ -1,19 +1,27 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <EditTextPreference
-        android:key="@string/pref_location_key"
         android:title="@string/pref_location_label"
+        android:key="@string/pref_location_key"
         android:defaultValue="@string/pref_location_default"
         android:inputType="text"
-        android:capitalize="words"
-        android:singleLine="true"/>
+        android:singleLine="true" />
 
     <ListPreference
-        android:key="@string/pref_temp_format_key"
-        android:title="@string/pref_temp_format_label"
-        android:defaultValue="@string/pref_temp_format_default"
-        android:entries="@array/pref_temp_format_list"
-        android:entryValues="@array/pref_temp_format_list_values"
-        android:positiveButtonText="@null" />
+        android:title="@string/pref_units_label"
+        android:key="@string/pref_units_key"
+        android:defaultValue="@string/pref_units_metric"
+        android:entryValues="@array/pref_units_values"
+        android:entries="@array/pref_units_options" />
+
+    <CheckBoxPreference
+        android:title="@string/pref_enable_notifications_label"
+        android:key="@string/pref_enable_notifications_key"
+        android:summaryOff="@string/pref_enable_notifications_false"
+        android:summaryOn="@string/pref_enable_notifications_true"
+        android:defaultValue="@string/pref_enable_notifications_default" />
 
 </PreferenceScreen>
